@@ -20,15 +20,15 @@ func AppendQuote(dst []byte, s string) []byte {
 		switch s[i] {
 		case '"', '\\':
 			dst = append(dst, '\\', s[i])
-		case 0x08:
+		case '\b' /* 0x08 */ :
 			dst = append(dst, '\\', 'b')
-		case 0x0C:
+		case '\f' /* 0x0C */ :
 			dst = append(dst, '\\', 'f')
-		case 0x0A:
+		case '\n' /* 0x0A */ :
 			dst = append(dst, '\\', 'n')
-		case 0x0D:
+		case '\r' /* 0x0D */ :
 			dst = append(dst, '\\', 'r')
-		case 0x09:
+		case '\t' /* 0x09 */ :
 			dst = append(dst, '\\', 't')
 		default:
 			dst = append(dst, unicodemisc.UnicodeEscapeSequence(s[i])...)

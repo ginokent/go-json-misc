@@ -1,6 +1,7 @@
 package jsonmisc_test
 
 import (
+	"io"
 	"os"
 	"testing"
 
@@ -35,11 +36,18 @@ type fixture struct {
 	expect string
 }
 
+const (
+	json  = "JSON_strings"
+	ctrl  = "control_characters"
+	jp    = "japanese"
+	emoji = "emoji"
+)
+
 var testcases = map[string]fixture{
-	"JSON_strings":       {`{"a":"https://github.com/"}`, `{\"a\":\"https://github.com/\"}`},
-	"control_characters": {"START" + "\x00" + "\b" + "\f" + "\n" + "\r" + "\t" + "\x1f" + "\x20" + "END", `START\u0000\b\f\n\r\t\u001f END`},
-	"japanese":           {"ぁ震天裂空斬光旋風滅砕神罰割殺撃", "ぁ震天裂空斬光旋風滅砕神罰割殺撃"},
-	"emoji":              {"😭🙇🏻‍♂️", "😭🙇🏻‍♂️"},
+	json:  {`{"a":"https://github.com/"}`, `{\"a\":\"https://github.com/\"}`},
+	ctrl:  {"START" + "\x00" + "\b" + "\f" + "\n" + "\r" + "\t" + "\x1f" + "\x20" + "END", `START\u0000\b\f\n\r\t\u001f END`},
+	jp:    {"狂人の真似とて大路を走らば、即ち狂人なり。", "狂人の真似とて大路を走らば、即ち狂人なり。"},
+	emoji: {"👍😭🙇‍♂️🙇🏻‍♂️🙇🏼‍♂️🙇🏽‍♂️🙇🏾‍♂️🙇🏿‍♂️👫👫🏻👫🏼👫🏽👫🏾👫🏿", "👍😭🙇‍♂️🙇🏻‍♂️🙇🏼‍♂️🙇🏽‍♂️🙇🏾‍♂️🙇🏿‍♂️👫👫🏻👫🏼👫🏽👫🏾👫🏿"},
 }
 
 func TestAppendQuote(t *testing.T) {
@@ -47,7 +55,7 @@ func TestAppendQuote(t *testing.T) {
 
 	var key string
 
-	key = "JSON_strings"
+	key = json
 	t.Run(key, func(t *testing.T) {
 		var byteSlice []byte
 
@@ -64,7 +72,7 @@ func TestAppendQuote(t *testing.T) {
 		os.Stdout.Write(byteSlice)
 	})
 
-	key = "control_characters"
+	key = ctrl
 	t.Run(key, func(t *testing.T) {
 		var byteSlice []byte
 
@@ -81,7 +89,7 @@ func TestAppendQuote(t *testing.T) {
 		os.Stdout.Write(byteSlice)
 	})
 
-	key = "japanese"
+	key = jp
 	t.Run(key, func(t *testing.T) {
 		var byteSlice []byte
 
@@ -98,7 +106,7 @@ func TestAppendQuote(t *testing.T) {
 		os.Stdout.Write(byteSlice)
 	})
 
-	key = "emoji"
+	key = emoji
 	t.Run(key, func(t *testing.T) {
 		var byteSlice []byte
 
@@ -119,13 +127,13 @@ func TestAppendQuote(t *testing.T) {
 // go test -bench . -benchmem -test.run=none -test.benchtime=1000ms
 
 func Benchmark(b *testing.B) {
+	var byteSlice []byte
 	b.Run("", func(b *testing.B) {
-		var byteSlice []byte
 		for i := 0; i < b.N; i++ {
-			byteSlice = jsonmisc.AppendQuote(byteSlice, testcases["json"].before)
+			byteSlice = jsonmisc.AppendQuote(byteSlice, testcases[json].before)
 			byteSlice = append(byteSlice, EOL()...)
 		}
-
-		os.Stdout.Write(byteSlice)
 	})
+	// nolint: errcheck
+	io.Discard.Write(byteSlice)
 }
