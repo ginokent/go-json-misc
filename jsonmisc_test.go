@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	jsonmisc "github.com/djeeno/go-json-escape"
+	jsonmisc "github.com/djeeno/go-json-misc"
 )
 
 // go test -cover -v

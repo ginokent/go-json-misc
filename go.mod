@@ -1,4 +1,4 @@
-module github.com/djeeno/go-json-escape
+module github.com/djeeno/go-json-misc
 
 go 1.16
 
