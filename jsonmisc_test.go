@@ -56,7 +56,7 @@ func TestAppendQuote(t *testing.T) {
 		expect := testcases[key].expect
 		actual := string(byteSlice)
 		if expect != actual {
-			t.FailNow()
+			t.Fail()
 		}
 
 		byteSlice = append(byteSlice, EOL()...)
@@ -73,7 +73,7 @@ func TestAppendQuote(t *testing.T) {
 		expect := testcases[key].expect
 		actual := string(byteSlice)
 		if expect != actual {
-			t.FailNow()
+			t.Fail()
 		}
 
 		byteSlice = append(byteSlice, EOL()...)
@@ -90,7 +90,7 @@ func TestAppendQuote(t *testing.T) {
 		expect := testcases[key].expect
 		actual := string(byteSlice)
 		if expect != actual {
-			t.FailNow()
+			t.Fail()
 		}
 
 		byteSlice = append(byteSlice, EOL()...)
@@ -107,7 +107,7 @@ func TestAppendQuote(t *testing.T) {
 		expect := testcases[key].expect
 		actual := string(byteSlice)
 		if expect != actual {
-			t.FailNow()
+			t.Fail()
 		}
 
 		byteSlice = append(byteSlice, EOL()...)
