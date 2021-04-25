@@ -53,87 +53,39 @@ var testcases = map[string]fixture{
 func TestAppendQuote(t *testing.T) {
 	SetEOL(LF)
 
-	var key string
+	for _, key := range []string{json, ctrl, jp, emoji} {
+		t.Run(key, func(t *testing.T) {
+			var byteSlice []byte
 
-	key = json
-	t.Run(key, func(t *testing.T) {
-		var byteSlice []byte
+			byteSlice = jsonmisc.AppendQuote(byteSlice, testcases[key].before)
 
-		byteSlice = jsonmisc.AppendQuote(byteSlice, testcases[key].before)
+			expect := testcases[key].expect
+			actual := string(byteSlice)
+			if expect != actual {
+				t.Fail()
+			}
 
-		expect := testcases[key].expect
-		actual := string(byteSlice)
-		if expect != actual {
-			t.Fail()
-		}
+			byteSlice = append(byteSlice, EOL()...)
 
-		byteSlice = append(byteSlice, EOL()...)
-
-		os.Stdout.Write(byteSlice)
-	})
-
-	key = ctrl
-	t.Run(key, func(t *testing.T) {
-		var byteSlice []byte
-
-		byteSlice = jsonmisc.AppendQuote(byteSlice, testcases[key].before)
-
-		expect := testcases[key].expect
-		actual := string(byteSlice)
-		if expect != actual {
-			t.Fail()
-		}
-
-		byteSlice = append(byteSlice, EOL()...)
-
-		os.Stdout.Write(byteSlice)
-	})
-
-	key = jp
-	t.Run(key, func(t *testing.T) {
-		var byteSlice []byte
-
-		byteSlice = jsonmisc.AppendQuote(byteSlice, testcases[key].before)
-
-		expect := testcases[key].expect
-		actual := string(byteSlice)
-		if expect != actual {
-			t.Fail()
-		}
-
-		byteSlice = append(byteSlice, EOL()...)
-
-		os.Stdout.Write(byteSlice)
-	})
-
-	key = emoji
-	t.Run(key, func(t *testing.T) {
-		var byteSlice []byte
-
-		byteSlice = jsonmisc.AppendQuote(byteSlice, testcases[key].before)
-
-		expect := testcases[key].expect
-		actual := string(byteSlice)
-		if expect != actual {
-			t.Fail()
-		}
-
-		byteSlice = append(byteSlice, EOL()...)
-
-		os.Stdout.Write(byteSlice)
-	})
+			os.Stdout.Write(byteSlice)
+		})
+	}
 }
 
 // go test -bench . -benchmem -test.run=none -test.benchtime=1000ms
 
 func Benchmark(b *testing.B) {
-	var byteSlice []byte
-	b.Run("", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			byteSlice = jsonmisc.AppendQuote(byteSlice, testcases[json].before)
-			byteSlice = append(byteSlice, EOL()...)
-		}
-	})
-	// nolint: errcheck
-	io.Discard.Write(byteSlice)
+	for i := 0; i < 5; i++ {
+		var byteSlice []byte
+
+		b.Run("jsonmisc.AppendQuote", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				byteSlice = jsonmisc.AppendQuote(byteSlice, testcases[json].before)
+				byteSlice = append(byteSlice, EOL()...)
+			}
+		})
+
+		// nolint: errcheck
+		io.Discard.Write(byteSlice)
+	}
 }
